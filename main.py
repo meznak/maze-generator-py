@@ -1,6 +1,7 @@
 # PyGame template.
  
 # Import standard modules.
+import argparse
 import sys
  
 # Import non-standard modules.
@@ -48,7 +49,7 @@ def draw(screen, maze: Maze):
   # Flip the display so that the things we drew actually show up.
   pg.display.update(changed_cells)
  
-def runpg(size = (100, 100), animate = True, profiling = False):
+def runpg(args):
   # Initialise pg.
   pg.init()
   
@@ -57,10 +58,10 @@ def runpg(size = (100, 100), animate = True, profiling = False):
   fpsClock = pg.time.Clock()
   
   # Set up the window.
-  width, height = 600, 600
+  window_width, window_height = [int(x) for x in args.window.split("x")]
   flags = DOUBLEBUF
 
-  screen = pg.display.set_mode((width, height), flags)
+  screen = pg.display.set_mode((window_width, window_height), flags)
   screen.set_alpha(None)
   pg.display.set_caption("Mazing")
   
@@ -69,22 +70,40 @@ def runpg(size = (100, 100), animate = True, profiling = False):
   # You can also draw surfaces onto other surfaces, rotate surfaces, and transform surfaces.
   
   # Set up the maze
-  width = size[0]
-  height = size[1]
-  maze = Maze((width, height))
+  grid_width, grid_height = [int(x) for x in args.geometry.split("x")]
+  maze = Maze((grid_width, grid_height))
 
   # Main game loop.
   dt = 1/fps # dt is the time since last frame.
   # for i in range(7):
   while True: # Loop forever!
     update(dt, maze) # You can update/draw here, I've just moved the code for neatness.
-    if animate or maze.finished:
+    if args.animate:
       draw(screen, maze)
       dt = fpsClock.tick(fps)
+    elif maze.finished:
+      if args.file:
+        # TODO: add file export
+        pass
+      else:
+        draw(screen, maze)
       
-      if maze.finished and profiling:
+      if args.profile:
         pg.quit()
         sys.exit(0)
 
 if __name__ == "__main__":
-    runpg(size=(50,50))
+  parser = argparse.ArgumentParser(description='Create a maze.')
+  parser.add_argument('-g', '--geometry', metavar='WxH', type=str, default="50x50",
+                      help='geometry of grid')
+  parser.add_argument('-w', '--window', metavar='WxH', type=str, default="600x600",
+                      help='windows size')
+  parser.add_argument('-A', '--no-animate', dest='animate', action='store_false', default=True,
+                      help='hide maze progress')
+  parser.add_argument('-f', '--file', type=str, nargs=1, default=None,
+                      help='write result to file') 
+  parser.add_argument('-p', '--profile', action='store_true', default=False,
+                      help='quit after generation (debugging)')
+  args = parser.parse_args()
+
+  runpg(args)

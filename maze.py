@@ -37,6 +37,7 @@ class Maze:
             self.current = self.stack.pop()
             self.current.update(self.stack)
         else:
+            self.current = None
             self.finished = True
 
 
