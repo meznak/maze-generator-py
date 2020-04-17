@@ -32,8 +32,12 @@ def update(dt, maze):
       sys.exit(0) # Not including this line crashes the script on Windows. Possibly
       # on other operating systems too, but I don't know for sure.
     # Handle other events as you wish.
-    if event.type == KEYDOWN and event.key == ord(' '):
-      maze.reset()
+    if event.type == KEYDOWN:
+      if event.key == ord(' ') or event.key == ord('r'):
+        maze.reset()
+      elif event.key == ord('q'):
+        pg.quit()
+        sys.exit(0)
 
   maze.update()
  
