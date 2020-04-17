@@ -59,6 +59,7 @@ def runpg(size = (100, 100), animate = True, profiling = False):
   # Set up the window.
   width, height = 600, 600
   flags = DOUBLEBUF
+
   screen = pg.display.set_mode((width, height), flags)
   screen.set_alpha(None)
   pg.display.set_caption("Mazing")
@@ -86,4 +87,4 @@ def runpg(size = (100, 100), animate = True, profiling = False):
         sys.exit(0)
 
 if __name__ == "__main__":
-    runpg(size=(100,100))
+    runpg(size=(50,50))

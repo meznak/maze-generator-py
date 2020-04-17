@@ -45,13 +45,13 @@ class Cell:
 
     def update(self, stack):
         self.visited = True
-        self.changed = True
 
         if len(self.choices):
             stack.append(self)
             choice = self.choices.pop()
             n = self.neighbors[choice]
             if n and not n.visited:
+                self.changed = True
                 n.changed = True
                 self.walls[choice] = False
                 n.walls[3 - choice] = False
@@ -88,4 +88,5 @@ class Cell:
             if self.walls[3]:
                 pg.draw.line(surface, pg.Color('black'), (x0, y0 + size[1]), (x0 + size[0], y0 + size[1]))
 
+            self.changed = False
             changed_cells.append(self.rect)
